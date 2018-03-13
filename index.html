@@ -145,9 +145,13 @@
 				}
 				return firebase.database().ref('/entries/' + term.charAt(0)).once('value').then(function(snapshot) {
 					entryChar = term.charAt(0)
+					/**
+					 * \u05C1\u05C2		= shin and sin dot
+					 * \u05D0-\u05EA	= consonantal range
+					 */
 					entries = snapshot.val().map(e => ({
 						vocalised: e,
-						stripped: e.replace(/[^\u05D0-\u05EA]/g, "")
+						stripped: e.replace(/[^\u05C1\u05C2\u05D0-\u05EA]/g, "")
 					}))
 					return updateEntries(term)
 				})
@@ -168,7 +172,7 @@
 				})
 			}
 			const inputBoxUpdated = () => {
-				const entries = getEntries($term.value)
+				const entries = getEntries($term.value.normalize("NFKC"))
 			}
 			$term.oninput = inputBoxUpdated
 		</script>
